@@ -32,15 +32,15 @@ defmodule Specimen.Factory do
           | {:context, context()}
           | {:patch, fun()}
 
-  @callback make_one(opts :: [option]) :: {struct(), context()}
+  @callback make_one(opts :: [option]) :: Specimen.Context.t()
 
-  @callback make_many(count :: integer(), opts :: [option]) :: {[struct()], [context()]}
+  @callback make_many(count :: integer(), opts :: [option]) :: [Specimen.Context.t()]
 
-  @callback create_one(opts :: [option]) :: {struct(), context()}
+  @callback create_one(opts :: [option]) :: Specimen.Context.t()
 
-  @callback create_many(count :: integer(), opts :: [option]) :: {[struct()], [context()]}
+  @callback create_many(count :: integer(), opts :: [option]) :: [Specimen.Context.t()]
 
-  @callback create_all(count :: integer(), opts :: [option]) :: {[struct()], [context()]}
+  @callback create_all(count :: integer(), opts :: [option]) :: [Specimen.Context.t()]
 
   @callback build(Specimen.t()) :: Specimen.t()
 
@@ -53,6 +53,10 @@ defmodule Specimen.Factory do
   defmacro __using__(opts) when is_list(opts) do
     quote bind_quoted: [opts: opts] do
       @behaviour Specimen.Factory
+
+      # unless opts[:module] do
+      #   raise "Missing `:module` option"
+      # end
 
       {module, opts} = Keyword.pop!(opts, :module)
       {repo, opts} = Keyword.pop(opts, :repo)
@@ -90,8 +94,9 @@ defmodule Specimen.Factory do
       end
 
       def create_all(count, opts \\ []) do
-        opts = Keyword.merge([repo: @factory_repo, prefix: @factory_prefix], opts)
-        Specimen.Creator.create_all(@factory_module, @factory, count, opts)
+        # opts = Keyword.merge([repo: @factory_repo, prefix: @factory_prefix], opts)
+        # Specimen.Creator.create_all(@factory_module, @factory, count, opts)
+        %{}
       end
 
       def build(%Specimen{module: module, context: context}) when module != unquote(module) do

@@ -6,10 +6,17 @@ defmodule Specimen do
   """
 
   alias __MODULE__
+  alias Specimen.Context
 
   @type t :: %__MODULE__{}
 
-  defstruct module: nil, struct: nil, funs: [], includes: [], excludes: [], context: %{}, overrides: %{}
+  defstruct module: nil,
+            struct: nil,
+            funs: [],
+            includes: [],
+            excludes: [],
+            context: %{},
+            overrides: %{}
 
   @doc """
   Creates a new Specimen.
@@ -60,9 +67,12 @@ defmodule Specimen do
 
   @doc """
   Adds a transformation to the given field using a function.
+  You can pass an optional tag to identify the function in the specimen.
   """
-  def transform(%Specimen{} = specimen, fun) when is_function(fun) do
-    Map.update!(specimen, :funs, &[fun | &1])
+  def transform(%Specimen{} = specimen, fun, tag \\ nil)
+      when is_function(fun) and is_atom(tag) do
+    value = if tag, do: {tag, fun}, else: fun
+    Map.update!(specimen, :funs, &[value | &1])
   end
 
   @doc """
@@ -79,7 +89,7 @@ defmodule Specimen do
   def to_struct(%Specimen{module: module} = specimen) do
     %{includes: includes, excludes: excludes, overrides: overrides} = specimen
 
-    {struct, context} = transform(specimen)
+    {struct, context} = apply_transforms(specimen)
 
     fields =
       struct
@@ -89,25 +99,36 @@ defmodule Specimen do
         {key, overrides[key] || value}
       end)
 
-    {struct!(module, fields), context}
+    %Context{specimen: specimen, struct: struct!(module, fields), states: context}
   end
 
-  defp transform(%{funs: funs, struct: struct, context: context}) do
+  defp apply_transforms(specimen) do
+    %{funs: funs, struct: struct} = specimen
+
     {struct, context} =
       funs
       |> Enum.reverse()
-      |> Enum.reduce({struct, context}, &invoke_transform/2)
+      |> Enum.reduce({struct, %{}}, &invoke_transform/2)
 
     {struct, context}
   end
 
-  defp invoke_transform(function, {struct, context}) do
-    case apply(function, [struct]) do
-      {struct, state_context} ->
-        state_context = Enum.into(state_context, %{})
-        {struct, Map.merge(context, state_context)}
+  defp invoke_transform(fun, acc) do
+    invoke_transform(fun, nil, acc)
+  end
 
-      struct ->
+  defp invoke_transform(fun, tag, {struct, context}) do
+    result = apply(fun, [struct])
+
+    case {tag, result} do
+      {nil, {struct, _ctx}} ->
+        {struct, context}
+
+      {tag, {struct, ctx}} ->
+        ctx = Enum.into(ctx, %{})
+        {struct, Map.put(context, tag, ctx)}
+
+      {_, struct} ->
         {struct, context}
     end
   end
