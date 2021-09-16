@@ -36,14 +36,16 @@ defmodule Specimen.Builder do
     {repo, opts} = Keyword.pop!(opts, :repo)
     {prefix, opts} = Keyword.pop(opts, :prefix)
 
-    after_creating = fn %{struct: struct} = context ->
-      %{context | struct: factory.after_creating(struct, specimen.context)}
-    end
-
     specimen
     |> build(factory, count, opts)
-    |> Enum.map(&repo.insert!(&1, prefix: prefix, returning: true))
-    |> Enum.map(&after_creating.(&1))
+    |> Enum.map(fn context ->
+      struct =
+        context
+        |> Specimen.Context.get_struct()
+        |> repo.insert!(prefix: prefix, returning: true)
+        |> factory.after_creating(specimen.context)
+      %{ context | struct: struct}
+    end)
   end
 
   defp build(%Specimen{} = specimen, factory, count, opts) do
