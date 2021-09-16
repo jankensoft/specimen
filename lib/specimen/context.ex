@@ -1,7 +1,7 @@
 defmodule Specimen.Context do
   alias __MODULE__
 
-  defstruct [:specimen, :struct, :states]
+  defstruct [:struct, :states]
 
   def get_context(%Context{states: states}) do
     Enum.reduce(states, %{}, &Map.merge/2)

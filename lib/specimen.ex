@@ -99,7 +99,7 @@ defmodule Specimen do
         {key, overrides[key] || value}
       end)
 
-    %Context{specimen: specimen, struct: struct!(module, fields), states: context}
+    %Context{struct: struct!(module, fields), states: context}
   end
 
   defp apply_transforms(specimen) do
