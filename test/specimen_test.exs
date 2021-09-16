@@ -58,13 +58,23 @@ defmodule SpecimenTest do
       assert %Context{struct: %User{name: "John", lastname: nil}} = Specimen.to_struct(specimen)
     end
 
-    test "transform/2 changes a field" do
+    test "transform/3 changes a field" do
       specimen =
         User
         |> Specimen.new()
         |> Specimen.transform(&Map.put(&1, :name, "Joe"))
 
       assert %Specimen{includes: [], excludes: [], funs: [_ | _]} = specimen
+      assert %Context{struct: %User{name: "Joe", lastname: "Doe"}} = Specimen.to_struct(specimen)
+    end
+
+    test "transform/3 changes a field with tag" do
+      specimen =
+        User
+        |> Specimen.new()
+        |> Specimen.transform(&Map.put(&1, :name, "Joe"), :name)
+
+      assert %Specimen{includes: [], excludes: [], funs: [{:name, _}]} = specimen
       assert %Context{struct: %User{name: "Joe", lastname: "Doe"}} = Specimen.to_struct(specimen)
     end
 

@@ -113,6 +113,10 @@ defmodule Specimen do
     {struct, context}
   end
 
+  defp invoke_transform({tag, fun}, acc) do
+    invoke_transform(fun, tag, acc)
+  end
+
   defp invoke_transform(fun, acc) do
     invoke_transform(fun, nil, acc)
   end
