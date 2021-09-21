@@ -26,25 +26,25 @@ defmodule Specimen.Builder do
   Creates structs for a given `Specimen` as specified by the factory.
 
   ## Options
+  Accepts the same options as `Specimen.Builder.make/4` in addition to:
 
   - `:repo` - The repo to use when inserting the item.
   - `:prefix` - The prefix to use when inserting the item.
-  - `:states` - A list of states to be applied to the item.
-  - `:overrides` - A map or keyword list to override the struct's field.
   """
   def create(%Specimen{} = specimen, factory, count, opts \\ []) do
     {repo, opts} = Keyword.pop!(opts, :repo)
     {prefix, opts} = Keyword.pop(opts, :prefix)
 
     specimen
-    |> build(factory, count, opts)
+    |> make(factory, count, opts)
     |> Enum.map(fn context ->
       struct =
         context
         |> Specimen.Context.get_struct()
         |> repo.insert!(prefix: prefix, returning: true)
         |> factory.after_creating(specimen.context)
-      %{ context | struct: struct}
+
+      %{context | struct: struct}
     end)
   end
 
