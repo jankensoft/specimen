@@ -4,6 +4,7 @@ defmodule Specimen.BuilderTest do
   alias UserFixture, as: User
   alias UserFixtureFactory, as: Factory
   alias Specimen.Context
+  alias Specimen.TestRepo, as: Repo
 
   doctest Specimen.Builder
 
@@ -40,8 +41,6 @@ defmodule Specimen.BuilderTest do
   end
 
   describe "create/4 returns the given amount of built structs" do
-    alias Specimen.TestRepo, as: Repo
-
     test "with repo" do
       structs =
         User
@@ -81,5 +80,28 @@ defmodule Specimen.BuilderTest do
 
       assert [%User{name: "John"}] = structs
     end
+  end
+
+  test "make/4 calls after_making callback" do
+    structs =
+      User
+      |> Specimen.new()
+      |> Specimen.Builder.make(Factory, 1)
+      |> Context.get_structs()
+
+    assert [%User{age: age}] = structs
+    assert age != nil
+  end
+
+  test "create/4 calls after_creating callback" do
+    structs =
+      User
+      |> Specimen.new()
+      |> Specimen.Builder.create(Factory, 1, repo: Repo)
+      |> Context.get_structs()
+
+    assert [%User{name: name, lastname: lastname, email: email, age: age}] = structs
+    assert email == String.downcase("#{name}.#{lastname}@mail.com")
+    assert age != nil
   end
 end
