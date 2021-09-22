@@ -17,10 +17,10 @@ defmodule Specimen.CreatorTest do
       assert %User{name: "John", lastname: "Schmoe", status: "active"} = struct
     end
 
-    test "by passing the :context option" do
+    test "by passing the :params option" do
       struct =
         User
-        |> Specimen.Creator.create_one(Factory, repo: Repo, context: %{age: 18})
+        |> Specimen.Creator.create_one(Factory, repo: Repo, params: %{age: 18})
         |> Specimen.Context.get_struct()
 
       assert %User{name: "Joe", lastname: "Schmoe", age: 18} = struct
@@ -37,10 +37,10 @@ defmodule Specimen.CreatorTest do
       assert [%User{name: "John", lastname: "Schmoe", status: "active"}] = structs
     end
 
-    test "by passing the :context option" do
+    test "by passing the :params option" do
       structs =
         User
-        |> Specimen.Creator.create_many(Factory, 1, repo: Repo, context: %{age: 18})
+        |> Specimen.Creator.create_many(Factory, 1, repo: Repo, params: %{age: 18})
         |> Specimen.Context.get_structs()
 
       assert [%User{name: "Joe", lastname: "Schmoe", age: 18}] = structs

@@ -9,19 +9,19 @@ defmodule UserFixtureFactory do
     |> Specimen.exclude(:password)
   end
 
-  def state(:status, %UserFixture{} = user, context) do
-    %{user | status: context[:status] || "active"}
+  def state(:status, %UserFixture{} = user, params) do
+    %{user | status: params[:status] || "active"}
   end
 
-  def state(:id, %UserFixture{} = user, context) do
-    {%{user | id: context[:id]}, manual_sequence: true}
+  def state(:id, %UserFixture{} = user, params) do
+    {%{user | id: params[:id]}, manual_sequence: true}
   end
 
-  def after_making(%UserFixture{} = user, context) do
-    %{user | age: context[:age] || System.unique_integer([:positive, :monotonic])}
+  def after_making(%UserFixture{} = user, params) do
+    %{user | age: params[:age] || System.unique_integer([:positive, :monotonic])}
   end
 
-  def after_creating(%UserFixture{name: name, lastname: lastname} = user, context) do
-    %{user | email: context[:email] || String.downcase("#{name}.#{lastname}@mail.com")}
+  def after_creating(%UserFixture{name: name, lastname: lastname} = user, params) do
+    %{user | email: params[:email] || String.downcase("#{name}.#{lastname}@mail.com")}
   end
 end

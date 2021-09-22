@@ -23,13 +23,13 @@ defmodule Specimen.Factory do
 
   """
 
-  @type context :: map() | keyword()
+  @type params :: map() | keyword()
 
   @type option ::
           {:module, module()}
           | {:repo, Ecto.Repo.t()}
           | {:prefix, binary()}
-          | {:context, context()}
+          | {:params, params()}
           | {:patch, fun()}
 
   @callback make_one(opts :: [option]) :: Specimen.Context.t()
@@ -44,11 +44,11 @@ defmodule Specimen.Factory do
 
   @callback build(Specimen.t()) :: Specimen.t()
 
-  @callback state(atom(), struct(), context :: context()) :: struct() | {struct(), context()}
+  @callback state(atom(), struct(), params :: params()) :: struct() | {struct(), params()}
 
-  @callback after_making(struct(), context :: context()) :: struct()
+  @callback after_making(struct(), params :: params()) :: struct()
 
-  @callback after_creating(struct(), context :: context()) :: struct()
+  @callback after_creating(struct(), params :: params()) :: struct()
 
   defmacro __using__(opts) when is_list(opts) do
     quote bind_quoted: [opts: opts] do
@@ -99,17 +99,17 @@ defmodule Specimen.Factory do
         %{}
       end
 
-      def build(%Specimen{module: module, context: context}) when module != unquote(module) do
+      def build(%Specimen{module: module, params: params}) when module != unquote(module) do
         raise "This factory can't be used to build #{inspect(module)}"
       end
 
       def build(specimen), do: specimen
 
-      def state(_state, struct, _context), do: struct
+      def state(_state, struct, _params), do: struct
 
-      def after_making(struct, _context), do: struct
+      def after_making(struct, _params), do: struct
 
-      def after_creating(struct, _context), do: struct
+      def after_creating(struct, _params), do: struct
 
       defoverridable build: 1, state: 3, after_making: 2, after_creating: 2
     end

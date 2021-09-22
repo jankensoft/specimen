@@ -15,14 +15,14 @@ defmodule Specimen do
             funs: [],
             includes: [],
             excludes: [],
-            context: %{},
+            params: %{},
             overrides: %{}
 
   @doc """
   Creates a new Specimen.
   """
-  def new(module, context \\ %{}) do
-    %Specimen{module: module, struct: struct!(module), context: Enum.into(context, %{})}
+  def new(module, params \\ %{}) do
+    %Specimen{module: module, struct: struct!(module), params: Enum.into(params, %{})}
   end
 
   @doc """
@@ -89,7 +89,7 @@ defmodule Specimen do
   def to_struct(%Specimen{module: module} = specimen) do
     %{includes: includes, excludes: excludes, overrides: overrides} = specimen
 
-    {struct, context} = apply_transforms(specimen)
+    {struct, params} = apply_transforms(specimen)
 
     fields =
       struct
@@ -99,18 +99,18 @@ defmodule Specimen do
         {key, overrides[key] || value}
       end)
 
-    %Context{struct: struct!(module, fields), states: context}
+    %Context{struct: struct!(module, fields), states: params}
   end
 
   defp apply_transforms(specimen) do
     %{funs: funs, struct: struct} = specimen
 
-    {struct, context} =
+    {struct, params} =
       funs
       |> Enum.reverse()
       |> Enum.reduce({struct, %{}}, &invoke_transform/2)
 
-    {struct, context}
+    {struct, params}
   end
 
   defp invoke_transform({tag, fun}, acc) do
@@ -121,19 +121,19 @@ defmodule Specimen do
     invoke_transform(fun, nil, acc)
   end
 
-  defp invoke_transform(fun, tag, {struct, context}) do
+  defp invoke_transform(fun, tag, {struct, params}) do
     result = apply(fun, [struct])
 
     case {tag, result} do
       {nil, {struct, _ctx}} ->
-        {struct, context}
+        {struct, params}
 
       {tag, {struct, ctx}} ->
         ctx = Enum.into(ctx, %{})
-        {struct, Map.put(context, tag, ctx)}
+        {struct, Map.put(params, tag, ctx)}
 
       {_, struct} ->
-        {struct, context}
+        {struct, params}
     end
   end
 

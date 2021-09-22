@@ -10,10 +10,10 @@ defmodule Specimen.Creator do
   - `:context` - A map or keyword list to act as a shared context.
   """
   def create_one(module, factory, opts \\ []) do
-    {context, opts} = Keyword.pop(opts, :context, [])
+    {params, opts} = Keyword.pop(opts, :params, [])
 
     module
-    |> Specimen.new(context)
+    |> Specimen.new(params)
     |> Specimen.Builder.create(factory, 1, opts)
     |> List.first()
   end
@@ -24,13 +24,13 @@ defmodule Specimen.Creator do
   ## Options
   Accepts the same options as `Specimen.Builder.create/3` in addition to:
 
-  - `:context` - A map or keyword list to act as a shared context.
+  - `:params` - A map or keyword list to act as a shared params.
   """
   def create_many(module, factory, count, opts \\ []) do
-    {context, opts} = Keyword.pop(opts, :context, [])
+    {params, opts} = Keyword.pop(opts, :params, [])
 
     module
-    |> Specimen.new(context)
+    |> Specimen.new(params)
     |> Specimen.Builder.create(factory, count, opts)
   end
 

@@ -7,13 +7,13 @@ defmodule Specimen.Maker do
   ## Options
   Accepts the same options as `Specimen.Builder.make/3` in addition to:
 
-  - `:context` - A map or keyword list to act as a shared context.
+  - `:params` - A map or keyword list to act as a shared params.
   """
   def make_one(module, factory, opts \\ []) do
-    {context, opts} = Keyword.pop(opts, :context, [])
+    {params, opts} = Keyword.pop(opts, :params, [])
 
     module
-    |> Specimen.new(context)
+    |> Specimen.new(params)
     |> Specimen.Builder.make(factory, 1, opts)
     |> List.first()
   end
@@ -24,13 +24,13 @@ defmodule Specimen.Maker do
   ## Options
   Accepts the same options as `Specimen.Builder.make/3` in addition to:
 
-  - `:context` - A map or keyword list to act as a shared context.
+  - `:params` - A map or keyword list to act as a shared params.
   """
   def make_many(module, factory, count, opts \\ []) do
-    {context, _opts} = Keyword.pop(opts, :context, [])
+    {params, _opts} = Keyword.pop(opts, :params, [])
 
     module
-    |> Specimen.new(context)
+    |> Specimen.new(params)
     |> Specimen.Builder.make(factory, count, opts)
   end
 end

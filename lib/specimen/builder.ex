@@ -14,7 +14,7 @@ defmodule Specimen.Builder do
   """
   def make(%Specimen{} = specimen, factory, count, opts \\ []) do
     after_making = fn %{struct: struct} = context ->
-      %{context | struct: factory.after_making(struct, specimen.context)}
+      %{context | struct: factory.after_making(struct, specimen.params)}
     end
 
     specimen
@@ -42,7 +42,7 @@ defmodule Specimen.Builder do
         context
         |> Specimen.Context.get_struct()
         |> repo.insert!(prefix: prefix, returning: true)
-        |> factory.after_creating(specimen.context)
+        |> factory.after_creating(specimen.params)
 
       %{context | struct: struct}
     end)
@@ -67,9 +67,9 @@ defmodule Specimen.Builder do
     |> Specimen.to_struct()
   end
 
-  defp apply_states(%{context: context} = specimen, factory, states) do
+  defp apply_states(%{params: params} = specimen, factory, states) do
     Enum.reduce(states, specimen, fn state, specimen ->
-      Specimen.transform(specimen, &apply(factory, :state, [state, &1, context]), state)
+      Specimen.transform(specimen, &apply(factory, :state, [state, &1, params]), state)
     end)
   end
 
