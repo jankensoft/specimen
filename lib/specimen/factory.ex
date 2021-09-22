@@ -30,7 +30,7 @@ defmodule Specimen.Factory do
           | {:repo, Ecto.Repo.t()}
           | {:prefix, binary()}
           | {:params, params()}
-          | {:patch, fun()}
+          | {:patch, fun() | {:drop, list(atom())}}
 
   @callback make_one(opts :: [option]) :: Specimen.Context.t()
 
@@ -94,9 +94,8 @@ defmodule Specimen.Factory do
       end
 
       def create_all(count, opts \\ []) do
-        # opts = Keyword.merge([repo: @factory_repo, prefix: @factory_prefix], opts)
-        # Specimen.Creator.create_all(@factory_module, @factory, count, opts)
-        %{}
+        opts = Keyword.merge([repo: @factory_repo, prefix: @factory_prefix], opts)
+        Specimen.Creator.create_all(@factory_module, @factory, count, opts)
       end
 
       def build(%Specimen{module: module, params: params}) when module != unquote(module) do

@@ -117,6 +117,32 @@ defmodule Specimen.BuilderTest do
 
   describe "create_all/4 returns the specified amount of structs persisted" do
     test "by passing required options" do
+      opts = [repo: Repo]
+
+      %{id: id} =
+        User
+        |> Specimen.new()
+        |> Specimen.Builder.create_all(Factory, 1, opts)
+        |> Specimen.Context.get_structs()
+        |> List.first()
+
+      assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
+    end
+
+    test "by passing {:drop, fields} to the :patch option" do
+      opts = [repo: Repo, patch: {:drop, [:__meta__, :__struct__, :id]}]
+
+      %{id: id} =
+        User
+        |> Specimen.new()
+        |> Specimen.Builder.create_all(Factory, 1, opts)
+        |> Specimen.Context.get_structs()
+        |> List.first()
+
+      assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
+    end
+
+    test "by passing a function to the :patch option" do
       opts = [repo: Repo, patch: &Map.drop(&1, [:__meta__, :__struct__, :id])]
 
       %{id: id} =
@@ -127,6 +153,16 @@ defmodule Specimen.BuilderTest do
         |> List.first()
 
       assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
+    end
+
+    test "by passing an invalid arg to the :patch option" do
+      opts = [repo: Repo, patch: nil]
+
+      assert_raise RuntimeError, "Invalid arg passed to option :patch", fn ->
+        User
+        |> Specimen.new()
+        |> Specimen.Builder.create_all(Factory, 1, opts)
+      end
     end
   end
 end

@@ -60,8 +60,7 @@ defmodule Specimen.CreatorTest do
       opts = [
         repo: Repo,
         states: [:status],
-        overrides: [name: "John"],
-        patch: &Map.drop(&1, [:__meta__, :__struct__, :id])
+        overrides: [name: "John"]
       ]
 
       structs =
@@ -75,8 +74,7 @@ defmodule Specimen.CreatorTest do
     test "by passing the :params option" do
       opts = [
         repo: Repo,
-        params: %{age: 18},
-        patch: &Map.drop(&1, [:__meta__, :__struct__, :id])
+        params: %{age: 18}
       ]
 
       structs =

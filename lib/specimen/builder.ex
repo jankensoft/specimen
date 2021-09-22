@@ -51,16 +51,18 @@ defmodule Specimen.Builder do
   @doc """
   Creates structs for a given `Specimen` as specified by the factory.
   Differs from `create/4` in that the items are inserted in a single batch.
-  This function relies on `Repo.insert_all/3` for performance reasons and expects the `:patch` option to be passed.
+  This function relies on `Repo.insert_all/3` for performance reasons and allows a `:patch` option to be passed
+  that will be used to patch the structs into insertable entries.
 
   ## Options
   Accepts the same options as `Specimen.Builder.create/4` in addition to:
 
-  - `:patch` - A function of single arity that will be used to patch the structs into insertable entries.
+  - `:patch` - It may be one of `{:drop, fields}` to drop the given fields or a function of single arity.
+    If this option is not present, the default behavior is `{:drop, [:__meta__, :__struct__, :id]}`.
   """
   def create_all(%Specimen{} = specimen, factory, count, opts \\ []) do
     {repo, opts} = Keyword.pop!(opts, :repo)
-    {patch, opts} = Keyword.pop!(opts, :patch)
+    {patch, opts} = Keyword.pop(opts, :patch, {:drop, [:__meta__, :__struct__, :id]})
     {prefix, opts} = Keyword.pop(opts, :prefix)
 
     contexts = make(specimen, factory, count, opts)
@@ -68,7 +70,18 @@ defmodule Specimen.Builder do
     entries =
       contexts
       |> Specimen.Context.get_structs()
-      |> Enum.map(&apply(patch, [&1]))
+      |> Enum.map(fn struct ->
+        case patch do
+          {:drop, fields} ->
+            Map.drop(struct, fields)
+
+          fun when is_function(fun, 1) ->
+            apply(patch, [struct])
+
+          _ ->
+            raise "Invalid arg passed to option :patch"
+        end
+      end)
 
     {_, entries} = repo.insert_all(specimen.module, entries, prefix: prefix, returning: true)
 
