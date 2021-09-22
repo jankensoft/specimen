@@ -103,4 +103,15 @@ defmodule Specimen.BuilderTest do
     assert email == String.downcase("#{name}.#{lastname}@mail.com")
     assert age != nil
   end
+
+  test "create/4 actually persists the built struct" do
+    %{id: id} =
+      User
+      |> Specimen.new()
+      |> Specimen.Builder.create(Factory, 1, repo: Repo)
+      |> Specimen.Context.get_structs()
+      |> List.first()
+
+    assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
+  end
 end
