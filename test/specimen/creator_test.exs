@@ -11,7 +11,11 @@ defmodule Specimen.CreatorTest do
     test "by passing the same options as Specimen.Builder.create/4" do
       struct =
         User
-        |> Specimen.Creator.create_one(Factory, repo: Repo, states: [:status], overrides: [name: "John"])
+        |> Specimen.Creator.create_one(Factory,
+          repo: Repo,
+          states: [:status],
+          overrides: [name: "John"]
+        )
         |> Specimen.Context.get_struct()
 
       assert %User{name: "John", lastname: "Schmoe", status: "active"} = struct
@@ -31,7 +35,11 @@ defmodule Specimen.CreatorTest do
     test "by passing the same options as Specimen.Builder.create/4" do
       structs =
         User
-        |> Specimen.Creator.create_many(Factory, 1, repo: Repo, states: [:status], overrides: [name: "John"])
+        |> Specimen.Creator.create_many(Factory, 1,
+          repo: Repo,
+          states: [:status],
+          overrides: [name: "John"]
+        )
         |> Specimen.Context.get_structs()
 
       assert [%User{name: "John", lastname: "Schmoe", status: "active"}] = structs
@@ -47,26 +55,36 @@ defmodule Specimen.CreatorTest do
     end
   end
 
-#   # test "create_all/4 returns the specified amount of structs persisted" do
-#   #   assert {[user], _context} =
-#   #            Creator.create_all(User, Factory, 1,
-#   #              repo: Repo,
-#   #              states: [:status],
-#   #              patch: &Map.drop(&1, [:__meta__, :__struct__, :id])
-#   #            )
+  describe "create_all/4 returns the given amount of built structs" do
+    test "by passing the same options as Specimen.Builder.create_all/4" do
+      opts = [
+        repo: Repo,
+        states: [:status],
+        overrides: [name: "John"],
+        patch: &Map.drop(&1, [:__meta__, :__struct__, :id])
+      ]
 
-#   #   assert %User{id: id} = user
-#   #   assert %User{id: ^id, name: "Joe", lastname: "Schmoe", status: "active"} = Repo.get!(User, id)
-#   # end
+      structs =
+        User
+        |> Specimen.Creator.create_all(Factory, 1, opts)
+        |> Specimen.Context.get_structs()
 
-#   # test "create_all/4 applies after_creating callback" do
-#   #   assert {[user], _context} =
-#   #            Creator.create_all(User, Factory, 1,
-#   #              repo: Repo,
-#   #              states: [:status],
-#   #              patch: &Map.drop(&1, [:__meta__, :__struct__, :id])
-#   #            )
+      assert [%User{name: "John", lastname: "Schmoe", status: "active"}] = structs
+    end
 
-#   #   assert user.email == String.downcase("#{user.name}.#{user.lastname}@mail.com")
-#   # end
+    test "by passing the :params option" do
+      opts = [
+        repo: Repo,
+        params: %{age: 18},
+        patch: &Map.drop(&1, [:__meta__, :__struct__, :id])
+      ]
+
+      structs =
+        User
+        |> Specimen.Creator.create_all(Factory, 1, opts)
+        |> Specimen.Context.get_structs()
+
+      assert [%User{name: "Joe", lastname: "Schmoe", age: 18}] = structs
+    end
+  end
 end

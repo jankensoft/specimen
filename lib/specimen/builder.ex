@@ -48,6 +48,35 @@ defmodule Specimen.Builder do
     end)
   end
 
+  @doc """
+  Creates structs for a given `Specimen` as specified by the factory.
+  Differs from `create/4` in that the items are inserted in a single batch.
+  This function relies on `Repo.insert_all/3` for performance reasons and expects the `:patch` option to be passed.
+
+  ## Options
+  Accepts the same options as `Specimen.Builder.create/4` in addition to:
+
+  - `:patch` - A function of single arity that will be used to patch the structs into insertable entries.
+  """
+  def create_all(%Specimen{} = specimen, factory, count, opts \\ []) do
+    {repo, opts} = Keyword.pop!(opts, :repo)
+    {patch, opts} = Keyword.pop!(opts, :patch)
+    {prefix, opts} = Keyword.pop(opts, :prefix)
+
+    contexts = make(specimen, factory, count, opts)
+
+    entries =
+      contexts
+      |> Specimen.Context.get_structs()
+      |> Enum.map(&apply(patch, [&1]))
+
+    {_, entries} = repo.insert_all(specimen.module, entries, prefix: prefix, returning: true)
+
+    structs = Enum.map(entries, &factory.after_creating(&1, specimen.params))
+
+    Enum.zip_with(contexts, structs, &Map.put(&1, :struct, &2))
+  end
+
   defp build(%Specimen{} = specimen, factory, count, opts) do
     {states, opts} = Keyword.pop(opts, :states, [])
     {overrides, _opts} = Keyword.pop(opts, :overrides, [])

@@ -114,4 +114,19 @@ defmodule Specimen.BuilderTest do
 
     assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
   end
+
+  describe "create_all/4 returns the specified amount of structs persisted" do
+    test "by passing required options" do
+      opts = [repo: Repo, patch: &Map.drop(&1, [:__meta__, :__struct__, :id])]
+
+      %{id: id} =
+        User
+        |> Specimen.new()
+        |> Specimen.Builder.create_all(Factory, 1, opts)
+        |> Specimen.Context.get_structs()
+        |> List.first()
+
+      assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
+    end
+  end
 end

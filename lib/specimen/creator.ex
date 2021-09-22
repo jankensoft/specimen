@@ -36,40 +36,18 @@ defmodule Specimen.Creator do
 
   @doc """
   Creates many items as specified by the factory.
-  Differs from `create_many` in that the items are inserted in a single transaction.
-  This function relies on `Repo.insert_all/3` for performance reasons and expects the `:patch` option to be passed.
+  Check `Specimen.Builder.create_all/4` for more information.
 
   ## Options
+  Accepts the same options as `create_many/4` in addition to:
 
-  - `:repo` - The repo to use when inserting the item.
-  - `:prefix` - The prefix to use when inserting the item.
-  - `:states` - A list of states to be applied to the item.
-  - `:context` - A map or keyword list to act as a shared context.`
-  - `:patch` - A function of single arity that will be used to patch the structs into insertable entries.
-  - `:overrides` - A map or keyword list to override the struct's field.
+  - `:params` - A map or keyword list to act as a shared params.
   """
-  # def create_all(module, factory, count, opts \\ []) do
-  #   {repo, opts} = Keyword.pop!(opts, :repo)
-  #   {patch, opts} = Keyword.pop!(opts, :patch)
-  #   {prefix, opts} = Keyword.pop(opts, :prefix)
-  #   {states, opts} = Keyword.pop(opts, :states, [])
-  #   {overrides, opts} = Keyword.pop(opts, :overrides, [])
-  #   {context, _opts} = Keyword.pop(opts, :context, [])
+  def create_all(module, factory, count, opts \\ []) do
+    {params, opts} = Keyword.pop(opts, :params, [])
 
-  #   {structs, contexts} =
-  #     module
-  #     |> Specimen.new(context)
-  #     |> Builder.build(factory, count, states, overrides)
-
-  #   entries = Enum.map(structs, &apply(patch, [&1]))
-
-  #   {_, entries} = repo.insert_all(module, entries, prefix: prefix, returning: true)
-
-  #   entries =
-  #     entries
-  #     |> Enum.zip(contexts)
-  #     |> Enum.map(fn {entry, context} -> factory.after_creating(entry, context) end)
-
-  #   {entries, contexts}
-  # end
+      module
+      |> Specimen.new(params)
+      |> Specimen.Builder.create_all(factory, count, opts)
+  end
 end
