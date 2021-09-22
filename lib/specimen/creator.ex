@@ -46,8 +46,8 @@ defmodule Specimen.Creator do
   def create_all(module, factory, count, opts \\ []) do
     {params, opts} = Keyword.pop(opts, :params, [])
 
-      module
-      |> Specimen.new(params)
-      |> Specimen.Builder.create_all(factory, count, opts)
+    module
+    |> Specimen.new(params)
+    |> Specimen.Builder.create_all(factory, count, opts)
   end
 end

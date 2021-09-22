@@ -32,7 +32,9 @@ defmodule SpecimenTest do
         |> Specimen.include(:lastname, "Schmoe")
 
       assert %Specimen{includes: [:lastname, :name], funs: [_ | _]} = specimen
-      assert %Context{struct: %User{name: "Joe", lastname: "Schmoe"}} = Specimen.to_struct(specimen)
+
+      assert %Context{struct: %User{name: "Joe", lastname: "Schmoe"}} =
+               Specimen.to_struct(specimen)
     end
 
     test "vary/3 adds a field with a random value from a given list" do
@@ -98,6 +100,5 @@ defmodule SpecimenTest do
       assert %Specimen{overrides: %{name: "Joe"}} = specimen
       assert %Context{struct: %User{name: "Joe"}} = Specimen.to_struct(specimen)
     end
-
   end
 end
