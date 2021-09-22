@@ -7,31 +7,45 @@ defmodule Specimen.CreatorTest do
   alias UserFixtureFactory, as: Factory
   alias Specimen.TestRepo, as: Repo
 
-#   test "create_one/3 returns exactly one persisted struct" do
-#     assert {user, _context} = Creator.create_one(User, Factory, repo: Repo, states: [:status])
-#     assert %User{id: id} = user
-#     assert %User{id: ^id, name: "Joe", lastname: "Schmoe", status: "active"} = Repo.get!(User, id)
-#   end
+  describe "create_one/3 returns exactly one built struct" do
+    test "by passing the same options as Specimen.Builder.create/4" do
+      struct =
+        User
+        |> Specimen.Creator.create_one(Factory, repo: Repo, states: [:status], overrides: [name: "John"])
+        |> Specimen.Context.get_struct()
 
-#   test "create_one/3 invokes after_creating callback" do
-#     assert {user, _context} = Creator.create_one(User, Factory, repo: Repo, states: [:status])
-#     assert user.email == String.downcase("#{user.name}.#{user.lastname}@mail.com")
-#   end
+      assert %User{name: "John", lastname: "Schmoe", status: "active"} = struct
+    end
 
-#   test "create_many/4 returns the specified amount of structs persisted" do
-#     assert {[user], _context} =
-#              Creator.create_many(User, Factory, 1, repo: Repo, states: [:status])
+    test "by passing the :context option" do
+      struct =
+        User
+        |> Specimen.Creator.create_one(Factory, repo: Repo, context: %{age: 18})
+        |> Specimen.Context.get_struct()
 
-#     assert %User{id: id} = user
-#     assert %User{id: ^id, name: "Joe", lastname: "Schmoe", status: "active"} = Repo.get!(User, id)
-#   end
+      assert %User{name: "Joe", lastname: "Schmoe", age: 18} = struct
+    end
+  end
 
-#   test "create_many/4 applies after_creating callback" do
-#     assert {[user], _context} =
-#              Creator.create_many(User, Factory, 1, repo: Repo, states: [:status])
+  describe "create_many/4 returns the given amount of built structs" do
+    test "by passing the same options as Specimen.Builder.create/4" do
+      structs =
+        User
+        |> Specimen.Creator.create_many(Factory, 1, repo: Repo, states: [:status], overrides: [name: "John"])
+        |> Specimen.Context.get_structs()
 
-#     assert user.email == String.downcase("#{user.name}.#{user.lastname}@mail.com")
-#   end
+      assert [%User{name: "John", lastname: "Schmoe", status: "active"}] = structs
+    end
+
+    test "by passing the :context option" do
+      structs =
+        User
+        |> Specimen.Creator.create_many(Factory, 1, repo: Repo, context: %{age: 18})
+        |> Specimen.Context.get_structs()
+
+      assert [%User{name: "Joe", lastname: "Schmoe", age: 18}] = structs
+    end
+  end
 
 #   # test "create_all/4 returns the specified amount of structs persisted" do
 #   #   assert {[user], _context} =
