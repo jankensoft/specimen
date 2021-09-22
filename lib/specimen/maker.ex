@@ -1,8 +1,6 @@
 defmodule Specimen.Maker do
   @moduledoc false
 
-  alias Specimen.Builder
-
   @doc """
   Makes one item as specified by the factory.
 
@@ -17,6 +15,7 @@ defmodule Specimen.Maker do
     module
     |> Specimen.new(context)
     |> Specimen.Builder.make(factory, 1, opts)
+    |> List.first()
   end
 
   @doc """
