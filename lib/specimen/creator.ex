@@ -15,6 +15,7 @@ defmodule Specimen.Creator do
     module
     |> Specimen.new(context)
     |> Specimen.Builder.create(factory, 1, opts)
+    |> List.first()
   end
 
   @doc """
