@@ -89,4 +89,4 @@ This would allow us to use multiple contexts that return similar states (keys) w
 - [ ] Add `before_create` callback to allow factories to pre-configure how to patch entries beforehand
 - [ ] Add `before_make` callback to allow factories to pre-configure how to patch items beforehand
 - [x] Add `:override` option that allows the user to replace fields dynamically without having to hardcode optional code inside `after_making` and `after_creating`
-- [ ] Merge `Specimen.Creator` and `Specimen.Maker` functions into `Specimen.Build` and consider the presence of a `:repo` option as a request to insert the entries (this should only impact Specimen's inner API, the public factory API will remain the same). This will be necessary because of the amount of duplicated tests for similar cases we are developing into.
+- [x] Merge `Specimen.Creator` and `Specimen.Maker` functions into `Specimen.Build` and consider the presence of a `:repo` option as a request to insert the entries (this should only impact Specimen's inner API, the public factory API will remain the same). This will be necessary because of the amount of duplicated tests for similar cases we are developing into.
