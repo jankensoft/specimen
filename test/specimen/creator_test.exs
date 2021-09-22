@@ -1,12 +1,11 @@
-# defmodule Specimen.CreatorTest do
-#   use ExUnit.Case, async: true
+defmodule Specimen.CreatorTest do
+  use ExUnit.Case, async: true
 
-#   doctest Specimen.Creator
+  doctest Specimen.Creator
 
-#   alias Specimen.Creator
-#   alias UserFixture, as: User
-#   alias UserFixtureFactory, as: Factory
-#   alias Specimen.TestRepo, as: Repo
+  alias UserFixture, as: User
+  alias UserFixtureFactory, as: Factory
+  alias Specimen.TestRepo, as: Repo
 
 #   test "create_one/3 returns exactly one persisted struct" do
 #     assert {user, _context} = Creator.create_one(User, Factory, repo: Repo, states: [:status])
@@ -56,4 +55,4 @@
 
 #   #   assert user.email == String.downcase("#{user.name}.#{user.lastname}@mail.com")
 #   # end
-# end
+end
