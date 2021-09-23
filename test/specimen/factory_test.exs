@@ -1,9 +1,19 @@
-# defmodule Specimen.FactoryTest do
-#   use ExUnit.Case, async: true
+defmodule Specimen.FactoryTest do
+  use ExUnit.Case, async: true
 
-#   alias UserFixture, as: User
-#   alias UserFixtureFactory, as: Factory
+  alias UserFixture, as: User
+  alias UserFixtureFactory, as: Factory
 #   alias Specimen.TestRepo, as: Repo
+
+test "state/4 allows the return of a tuple {struct, attrs}" do
+  context = Factory.make_one(states: [password: "1234"])
+  assert Specimen.Context.get_attr(context, :password, :encoding) == :base64
+end
+
+test "each state should have isolated attrs in Specimen.Context" do
+  context = Factory.make_one(states: [:id, password: "1234"])
+  assert Specimen.Context.get_attr(context, :password, :encoding) == :base64
+end
 
 #   defmodule OtherModule, do: defstruct([:name])
 #   defmodule EmptyFactory, do: use(Specimen.Factory, module: User)
@@ -123,4 +133,4 @@
 #     assert {[user], _context} = Factory.make_many(1, states: [:status], overrides: [status: "active"])
 #     assert %User{status: "active"} = user
 #   end
-# end
+end

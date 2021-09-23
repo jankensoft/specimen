@@ -115,7 +115,7 @@ defmodule Specimen.Builder do
         Specimen.transform(specimen, &apply(factory, :state, [state, &1, params, attrs]), state)
 
       state, specimen ->
-        Specimen.transform(specimen, &apply(factory, :state, [state, &1, params, %{}]), state)
+        Specimen.transform(specimen, &apply(factory, :state, [state, &1, params, nil]), state)
     end)
   end
 

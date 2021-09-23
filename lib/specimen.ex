@@ -105,12 +105,12 @@ defmodule Specimen do
   defp apply_transforms(specimen) do
     %{funs: funs, struct: struct} = specimen
 
-    {struct, params} =
+    {struct, attrs} =
       funs
       |> Enum.reverse()
       |> Enum.reduce({struct, %{}}, &invoke_transform/2)
 
-    {struct, params}
+    {struct, attrs}
   end
 
   defp invoke_transform({tag, fun}, acc) do
@@ -121,19 +121,19 @@ defmodule Specimen do
     invoke_transform(fun, nil, acc)
   end
 
-  defp invoke_transform(fun, tag, {struct, params}) do
+  defp invoke_transform(fun, tag, {struct, attrs}) do
     result = apply(fun, [struct])
 
     case {tag, result} do
-      {nil, {struct, _ctx}} ->
-        {struct, params}
+      {nil, {struct, _a}} ->
+        {struct, attrs}
 
-      {tag, {struct, ctx}} ->
-        ctx = Enum.into(ctx, %{})
-        {struct, Map.put(params, tag, ctx)}
+      {tag, {struct, a}} ->
+        a = Enum.into(a, %{})
+        {struct, Map.put(attrs, tag, a)}
 
       {_, struct} ->
-        {struct, params}
+        {struct, attrs}
     end
   end
 

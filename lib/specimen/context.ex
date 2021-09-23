@@ -19,23 +19,22 @@ defmodule Specimen.Context do
     Enum.map(contexts, &get_struct/1)
   end
 
-  def get_state(%Context{states: states}, key) do
+  def get_attr(%Context{states: states}, key) do
     states
-    |> get_context()
     |> Map.get(key)
   end
 
-  def get_states(contexts, key) when is_list(contexts) do
-    Enum.map(contexts, &get_state(&1, key))
+  def get_attrs(contexts, key) when is_list(contexts) do
+    Enum.map(contexts, &get_attr(&1, key))
   end
 
-  def get_state(%Context{states: states}, key1, key2) do
-    states
-    |> get_state(key1)
+  def get_attr(context, key1, key2) do
+    context
+    |> get_attr(key1)
     |> Map.get(key2)
   end
 
-  def get_states(contexts, key1, key2) when is_list(contexts) do
-    Enum.map(contexts, &get_state(&1, key1, key2))
+  def get_attrs(contexts, key1, key2) when is_list(contexts) do
+    Enum.map(contexts, &get_attr(&1, key1, key2))
   end
 end
