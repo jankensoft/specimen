@@ -44,7 +44,7 @@ defmodule Specimen.Factory do
 
   @callback build(Specimen.t()) :: Specimen.t()
 
-  @callback state(atom(), struct(), params :: params()) :: struct() | {struct(), params()}
+  @callback state(atom(), struct(), params :: params(), attrs :: map()) :: struct() | {struct(), params()}
 
   @callback after_making(struct(), params :: params()) :: struct()
 
@@ -104,13 +104,13 @@ defmodule Specimen.Factory do
 
       def build(specimen), do: specimen
 
-      def state(_state, struct, _params), do: struct
+      def state(_state, struct, _params, _attrs), do: struct
 
       def after_making(struct, _params), do: struct
 
       def after_creating(struct, _params), do: struct
 
-      defoverridable build: 1, state: 3, after_making: 2, after_creating: 2
+      defoverridable build: 1, state: 4, after_making: 2, after_creating: 2
     end
   end
 end

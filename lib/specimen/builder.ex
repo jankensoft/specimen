@@ -110,8 +110,12 @@ defmodule Specimen.Builder do
   end
 
   defp apply_states(%{params: params} = specimen, factory, states) do
-    Enum.reduce(states, specimen, fn state, specimen ->
-      Specimen.transform(specimen, &apply(factory, :state, [state, &1, params]), state)
+    Enum.reduce(states, specimen, fn
+      {state, attrs}, specimen ->
+        Specimen.transform(specimen, &apply(factory, :state, [state, &1, params, attrs]), state)
+
+      state, specimen ->
+        Specimen.transform(specimen, &apply(factory, :state, [state, &1, params, %{}]), state)
     end)
   end
 

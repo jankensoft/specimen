@@ -9,11 +9,11 @@ defmodule UserFixtureFactory do
     |> Specimen.exclude(:password)
   end
 
-  def state(:status, %UserFixture{} = user, params) do
-    %{user | status: params[:status] || "active"}
+  def state(:status, %UserFixture{} = user, params, attrs) do
+    %{user | status: params[:status] || attrs[:status] || "active"}
   end
 
-  def state(:id, %UserFixture{} = user, params) do
+  def state(:id, %UserFixture{} = user, params, _attrs) do
     {%{user | id: params[:id]}, manual_sequence: true}
   end
 

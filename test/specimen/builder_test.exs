@@ -37,6 +37,16 @@ defmodule Specimen.BuilderTest do
 
       assert [%User{name: "John"}] = structs
     end
+
+    test "by passing attrs to the :states option" do
+      structs =
+        User
+        |> Specimen.new()
+        |> Specimen.Builder.make(Factory, 1, states: [status: %{status: "banished"}])
+        |> Specimen.Context.get_structs()
+
+      assert [%User{status: "banished"}] = structs
+    end
   end
 
   describe "create/4 returns the given amount of built structs" do
