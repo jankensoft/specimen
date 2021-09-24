@@ -84,7 +84,7 @@ end
 - [x] Add support to vary from a given list of values (use-case: generate distinct values from a given list, eg: user roles)
 - [x] Rename `create_many` to `create_all` for performance usages and make `create_many` rely on `create_one` the same way `make_many` relies on `make_one`
   - [x] Allow user to pass a function to patch structs into entries so `create_all` can use `Repo.insert_all` properly (right now we just remove some fields and hope everything works, but each user might have a different need).
-- [ ] Check if grouping individual contexts by state can facilitate the return (eg: [state_context_1: %{}, state_context_2: %{}]).
+- [x] Check if grouping individual contexts by state can facilitate the return (eg: [state_context_1: %{}, state_context_2: %{}]).
 This would allow us to use multiple contexts that return similar states (keys) without mixing/ merging the result into a single map.
 - [ ] Add `before_create` callback to allow factories to pre-configure how to patch entries beforehand
 - [ ] Add `before_make` callback to allow factories to pre-configure how to patch items beforehand
