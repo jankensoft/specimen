@@ -40,7 +40,7 @@ defmodule Specimen.CreatorTest do
           states: [:status],
           overrides: [name: "John"]
         )
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "John", lastname: "Schmoe", status: "active"}] = structs
     end
@@ -49,7 +49,7 @@ defmodule Specimen.CreatorTest do
       structs =
         User
         |> Specimen.Creator.create_many(Factory, 1, repo: Repo, params: %{age: 18})
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "Joe", lastname: "Schmoe", age: 18}] = structs
     end
@@ -66,7 +66,7 @@ defmodule Specimen.CreatorTest do
       structs =
         User
         |> Specimen.Creator.create_all(Factory, 1, opts)
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "John", lastname: "Schmoe", status: "active"}] = structs
     end
@@ -80,7 +80,7 @@ defmodule Specimen.CreatorTest do
       structs =
         User
         |> Specimen.Creator.create_all(Factory, 1, opts)
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "Joe", lastname: "Schmoe", age: 18}] = structs
     end

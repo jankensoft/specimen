@@ -7,12 +7,12 @@ defmodule Specimen.FactoryTest do
 
 test "state/4 allows the return of a tuple {struct, attrs}" do
   context = Factory.make_one(states: [password: "1234"])
-  assert Specimen.Context.get_attr(context, :password, :encoding) == :base64
+  assert Specimen.Context.get_attrs(context, :password, :encoding) == :base64
 end
 
 test "each state should have isolated attrs in Specimen.Context" do
   context = Factory.make_one(states: [:id, password: "1234"])
-  assert Specimen.Context.get_attr(context, :password, :encoding) == :base64
+  assert Specimen.Context.get_attrs(context, :password, :encoding) == :base64
 end
 
 #   defmodule OtherModule, do: defstruct([:name])

@@ -69,7 +69,7 @@ defmodule Specimen.Builder do
 
     entries =
       contexts
-      |> Specimen.Context.get_structs()
+      |> Specimen.Context.get_struct()
       |> Enum.map(fn struct ->
         case patch do
           {:drop, fields} ->

@@ -3,38 +3,33 @@ defmodule Specimen.Context do
 
   defstruct [:struct, :states]
 
-  def get_context(%Context{states: states}) do
-    Enum.reduce(states, %{}, &Map.merge/2)
+  def merge_states(%Context{states: states}) do
+    Enum.reduce(states, %{}, fn {_, attrs}, acc -> Map.merge(acc, attrs) end)
   end
 
-  def get_contexts(contexts) when is_list(contexts) do
-    Enum.map(contexts, &get_context/1)
+  def merge_states(contexts) when is_list(contexts) do
+    Enum.map(contexts, &merge_states/1)
   end
 
-  def get_struct(%Context{struct: struct}) do
-    struct
-  end
+  def get_struct(%Context{struct: struct}), do: struct
 
-  def get_structs(contexts) when is_list(contexts) do
+  def get_struct(contexts) when is_list(contexts) do
     Enum.map(contexts, &get_struct/1)
   end
 
-  def get_attr(%Context{states: states}, key) do
-    states
+  def get_attrs(%Context{states: states}, state), do: Map.get(states, state)
+
+  def get_attrs(contexts, state) when is_list(contexts) do
+    Enum.map(contexts, &get_attrs(&1, state))
+  end
+
+  def get_attrs(%Context{} = context, state, key) do
+    context
+    |> get_attrs(state)
     |> Map.get(key)
   end
 
-  def get_attrs(contexts, key) when is_list(contexts) do
-    Enum.map(contexts, &get_attr(&1, key))
-  end
-
-  def get_attr(context, key1, key2) do
-    context
-    |> get_attr(key1)
-    |> Map.get(key2)
-  end
-
-  def get_attrs(contexts, key1, key2) when is_list(contexts) do
-    Enum.map(contexts, &get_attr(&1, key1, key2))
+  def get_attrs(contexts, state, key) when is_list(contexts) do
+    Enum.map(contexts, &get_attrs(&1, state, key))
   end
 end

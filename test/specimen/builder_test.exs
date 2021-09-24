@@ -13,7 +13,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.make(Factory, 1)
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "Joe", lastname: "Schmoe"}] = structs
     end
@@ -23,7 +23,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.make(Factory, 1, states: [:status])
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{status: "active"}] = structs
     end
@@ -33,7 +33,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.make(Factory, 1, overrides: [name: "John"])
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "John"}] = structs
     end
@@ -43,7 +43,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.make(Factory, 1, states: [status: %{status: "banished"}])
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{status: "banished"}] = structs
     end
@@ -55,7 +55,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.create(Factory, 1, repo: Repo)
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "Joe", lastname: "Schmoe"}] = structs
     end
@@ -65,7 +65,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.create(Factory, 1, prefix: "public", repo: Repo)
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "Joe", lastname: "Schmoe"}] = structs
     end
@@ -75,7 +75,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.create(Factory, 1, repo: Repo, states: [:status])
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{status: "active"}] = structs
     end
@@ -85,7 +85,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.create(Factory, 1, repo: Repo, overrides: [name: "John"])
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
 
       assert [%User{name: "John"}] = structs
     end
@@ -96,7 +96,7 @@ defmodule Specimen.BuilderTest do
       User
       |> Specimen.new()
       |> Specimen.Builder.make(Factory, 1)
-      |> Specimen.Context.get_structs()
+      |> Specimen.Context.get_struct()
 
     assert [%User{age: age}] = structs
     assert age != nil
@@ -107,7 +107,7 @@ defmodule Specimen.BuilderTest do
       User
       |> Specimen.new()
       |> Specimen.Builder.create(Factory, 1, repo: Repo)
-      |> Specimen.Context.get_structs()
+      |> Specimen.Context.get_struct()
 
     assert [%User{name: name, lastname: lastname, email: email, age: age}] = structs
     assert email == String.downcase("#{name}.#{lastname}@mail.com")
@@ -119,7 +119,7 @@ defmodule Specimen.BuilderTest do
       User
       |> Specimen.new()
       |> Specimen.Builder.create(Factory, 1, repo: Repo)
-      |> Specimen.Context.get_structs()
+      |> Specimen.Context.get_struct()
       |> List.first()
 
     assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
@@ -133,7 +133,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.create_all(Factory, 1, opts)
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
         |> List.first()
 
       assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
@@ -146,7 +146,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.create_all(Factory, 1, opts)
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
         |> List.first()
 
       assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
@@ -159,7 +159,7 @@ defmodule Specimen.BuilderTest do
         User
         |> Specimen.new()
         |> Specimen.Builder.create_all(Factory, 1, opts)
-        |> Specimen.Context.get_structs()
+        |> Specimen.Context.get_struct()
         |> List.first()
 
       assert %User{id: ^id, name: "Joe", lastname: "Schmoe"} = Repo.get!(User, id)
