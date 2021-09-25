@@ -1,6 +1,8 @@
 defmodule Specimen.Maker do
   @moduledoc false
 
+  @type opts :: Specimen.Builder.make_opts() | Specimen.params()
+
   @doc """
   Makes one item as specified by the factory.
 

@@ -9,6 +9,7 @@ defmodule Specimen do
   alias Specimen.Context
 
   @type t :: %__MODULE__{}
+  @type params :: {list() | map()}
 
   defstruct module: nil,
             struct: nil,

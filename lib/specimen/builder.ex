@@ -4,6 +4,10 @@ defmodule Specimen.Builder do
   This module is mainly used internaly by `Specimen.Maker` and `Specimen.Creator`.
   """
 
+  @type make_opts :: {:states, list()} | {:overrides, map() | list()}
+  @type create_opts :: make_opts | {:repo, Ecto.Repo.t()} | {:prefix, binary() | nil}
+  @type create_all_opts :: create_opts | {:patch, fun() | {:drop, list()}}
+
   @doc """
   Makes structs for a given `Specimen` as specified by the factory.
 

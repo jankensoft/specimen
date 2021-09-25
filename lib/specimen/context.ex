@@ -3,6 +3,8 @@ defmodule Specimen.Context do
 
   defstruct [:struct, :states]
 
+  @type t :: %__MODULE__{}
+
   def merge_states(%Context{states: states}) do
     Enum.reduce(states, %{}, fn {_, attrs}, acc -> Map.merge(acc, attrs) end)
   end
