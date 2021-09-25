@@ -1,19 +1,20 @@
-# defmodule Specimen.HasFactoryTest do
-#   use ExUnit.Case, async: true
+defmodule Specimen.HasFactoryTest do
+  use ExUnit.Case, async: true
 
-#   doctest Specimen.Maker
+  doctest Specimen.Maker
 
-#   alias UserFixture, as: User
+  alias UserFixture, as: User
 
-#   describe "using Specimen.HasFactory" do
-#     test "exposes a Factory.make_one/1 function inside the module" do
-#       assert {user, _context} = User.Factory.make_one()
-#       assert %User{} = user
-#     end
+  describe "using Specimen.HasFactory" do
+    test "exposes a Factory.make_one/1 function inside the module" do
+      assert %Specimen.Context{struct: %User{}} = User.Factory.make_one()
+    end
 
-#     test "exposes a Factory.make_many/2 function inside the module" do
-#       assert {users, _context} = User.Factory.make_many(2)
-#       assert [%User{}, %User{}] = users
-#     end
-#   end
-# end
+    test "exposes a Factory.make_many/2 function inside the module" do
+      assert [
+               %Specimen.Context{struct: %User{}},
+               %Specimen.Context{struct: %User{}}
+             ] = User.Factory.make_many(2)
+    end
+  end
+end
