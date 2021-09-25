@@ -25,17 +25,21 @@ defmodule Specimen.Factory do
 
   @callback make_one(opts :: list(Specimen.Maker.opts())) :: Specimen.Context.t()
 
-  @callback make_many(count :: integer(), opts :: list(Specimen.Maker.opts())) :: list(Specimen.Context.t())
+  @callback make_many(count :: integer(), opts :: list(Specimen.Maker.opts())) ::
+              list(Specimen.Context.t())
 
   @callback create_one(opts :: list(Specimen.Creator.opts())) :: Specimen.Context.t()
 
-  @callback create_many(count :: integer(), opts :: list(Specimen.Creator.opts())) :: list(Specimen.Context.t())
+  @callback create_many(count :: integer(), opts :: list(Specimen.Creator.opts())) ::
+              list(Specimen.Context.t())
 
-  @callback create_all(count :: integer(), opts :: list(Specimen.Creator.all_opts())) :: list(Specimen.Context.t())
+  @callback create_all(count :: integer(), opts :: list(Specimen.Creator.all_opts())) ::
+              list(Specimen.Context.t())
 
   @callback build(Specimen.t()) :: Specimen.t()
 
-  @callback state(atom(), struct(), params ::Specimen.params(), attrs :: term()) :: struct() | {struct(), Specimen.params()}
+  @callback state(atom(), struct(), params :: Specimen.params(), attrs :: term()) ::
+              struct() | {struct(), Specimen.params()}
 
   @callback after_making(struct(), params :: Specimen.params()) :: struct()
 
