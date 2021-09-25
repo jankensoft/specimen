@@ -10,7 +10,7 @@ defmodule Specimen.Creator do
   ## Options
   Accepts the same options as `Specimen.Builder.create/3` in addition to:
 
-  - `:context` - A map or keyword list to act as a shared context.
+  - `:params` - A map or keyword list to act as a shared context.
   """
   def create_one(module, factory, opts \\ []) do
     {params, opts} = Keyword.pop(opts, :params, [])

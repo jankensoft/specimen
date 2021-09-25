@@ -1,6 +1,8 @@
 defmodule Specimen.ContextTest do
   use ExUnit.Case, async: true
 
+  doctest Specimen.Context
+
   test "merge_states/1 returns all states as a unique map" do
     states = %{foo: %{bubbles: 1}, bar: %{bubbles: 2}}
     context = %Specimen.Context{states: states}

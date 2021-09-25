@@ -1,6 +1,8 @@
 defmodule Specimen.FactoryTest do
   use ExUnit.Case, async: true
 
+  doctest Specimen.Factory
+
   alias UserFixture, as: User
   alias UserFixtureFactory, as: Factory
 #   alias Specimen.TestRepo, as: Repo
