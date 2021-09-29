@@ -23,36 +23,35 @@ defmodule Specimen.Factory do
 
   """
 
-  @type context :: map() | keyword()
+  @callback make_one(opts :: list(Specimen.Maker.opts())) :: Specimen.Context.t()
 
-  @type option ::
-          {:module, module()}
-          | {:repo, Ecto.Repo.t()}
-          | {:prefix, binary()}
-          | {:context, context()}
-          | {:patch, fun()}
+  @callback make_many(count :: integer(), opts :: list(Specimen.Maker.opts())) ::
+              list(Specimen.Context.t())
 
-  @callback make_one(opts :: [option]) :: {struct(), context()}
+  @callback create_one(opts :: list(Specimen.Creator.opts())) :: Specimen.Context.t()
 
-  @callback make_many(count :: integer(), opts :: [option]) :: {[struct()], [context()]}
+  @callback create_many(count :: integer(), opts :: list(Specimen.Creator.opts())) ::
+              list(Specimen.Context.t())
 
-  @callback create_one(opts :: [option]) :: {struct(), context()}
-
-  @callback create_many(count :: integer(), opts :: [option]) :: {[struct()], [context()]}
-
-  @callback create_all(count :: integer(), opts :: [option]) :: {[struct()], [context()]}
+  @callback create_all(count :: integer(), opts :: list(Specimen.Creator.all_opts())) ::
+              list(Specimen.Context.t())
 
   @callback build(Specimen.t()) :: Specimen.t()
 
-  @callback state(atom(), struct(), context :: context()) :: struct() | {struct(), context()}
+  @callback state(atom(), struct(), params :: Specimen.params(), attrs :: term()) ::
+              struct() | {struct(), Specimen.params()}
 
-  @callback after_making(struct(), context :: context()) :: struct()
+  @callback after_making(struct(), params :: Specimen.params()) :: struct()
 
-  @callback after_creating(struct(), context :: context()) :: struct()
+  @callback after_creating(struct(), params :: Specimen.params()) :: struct()
 
   defmacro __using__(opts) when is_list(opts) do
     quote bind_quoted: [opts: opts] do
       @behaviour Specimen.Factory
+
+      # unless opts[:module] do
+      #   raise "Missing `:module` option"
+      # end
 
       {module, opts} = Keyword.pop!(opts, :module)
       {repo, opts} = Keyword.pop(opts, :repo)
@@ -94,19 +93,19 @@ defmodule Specimen.Factory do
         Specimen.Creator.create_all(@factory_module, @factory, count, opts)
       end
 
-      def build(%Specimen{module: module, context: context}) when module != unquote(module) do
+      def build(%Specimen{module: module, params: params}) when module != unquote(module) do
         raise "This factory can't be used to build #{inspect(module)}"
       end
 
       def build(specimen), do: specimen
 
-      def state(_state, struct, _context), do: struct
+      def state(_state, struct, _params, _attrs), do: struct
 
-      def after_making(struct, _context), do: struct
+      def after_making(struct, _params), do: struct
 
-      def after_creating(struct, _context), do: struct
+      def after_creating(struct, _params), do: struct
 
-      defoverridable build: 1, state: 3, after_making: 2, after_creating: 2
+      defoverridable build: 1, state: 4, after_making: 2, after_creating: 2
     end
   end
 end

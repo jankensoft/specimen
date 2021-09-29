@@ -1,46 +1,38 @@
 defmodule Specimen.Maker do
   @moduledoc false
 
-  alias Specimen.Builder
+  @type opts :: Specimen.Builder.make_opts() | Specimen.params()
 
   @doc """
   Makes one item as specified by the factory.
 
   ## Options
+  Accepts the same options as `Specimen.Builder.make/3` in addition to:
 
-  - `:states` - A list of states to be applied to the item.
-  - `:context` - A map or keyword list to act as a shared context.
-  - `:overrides` - A list with field names and values to override.
+  - `:params` - A map or keyword list to act as a shared params.
   """
   def make_one(module, factory, opts \\ []) do
-    {states, opts} = Keyword.pop(opts, :states, [])
-    {overrides, opts} = Keyword.pop(opts, :overrides, [])
-    {context, _opts} = Keyword.pop(opts, :context, [])
+    {params, opts} = Keyword.pop(opts, :params, [])
 
-    {[item], [context]} =
-      module
-      |> Specimen.new(context)
-      |> Builder.build(factory, 1, states, overrides)
-
-    {item, context}
+    module
+    |> Specimen.new(params)
+    |> Specimen.Builder.make(factory, 1, opts)
+    |> List.first()
   end
 
   @doc """
   Makes many items as specified by the factory.
 
   ## Options
+  Accepts the same options as `Specimen.Builder.make/3` in addition to:
 
-  - `:states` - A list of states to be applied to the item.
-  - `:context` - A map or keyword list to act as a shared context.
-  - `:overrides` - A list with field names and values to override.
+  - `:params` - A map or keyword list to act as a shared params.
   """
   def make_many(module, factory, count, opts \\ []) do
-    {states, opts} = Keyword.pop(opts, :states, [])
-    {overrides, opts} = Keyword.pop(opts, :overrides, [])
-    {context, _opts} = Keyword.pop(opts, :context, [])
+    {params, _opts} = Keyword.pop(opts, :params, [])
 
     module
-    |> Specimen.new(context)
-    |> Builder.build(factory, count, states, overrides)
+    |> Specimen.new(params)
+    |> Specimen.Builder.make(factory, count, opts)
   end
 end
